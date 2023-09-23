@@ -1,4 +1,4 @@
-package main
+package crawl
 
 import (
 	"context"
@@ -27,7 +27,9 @@ func NewService(
 		CREATE TABLE IF NOT EXISTS usernames (
 			id           INTEGER PRIMARY KEY AUTOINCREMENT,
 			username     TEXT NOT NULL,
+			rank         REAL,
 			processed_at TIMESTAMP,
+			typename     TEXT CHECK ( typename IN ('User', 'Organization')),
 			created_at   TIMESTAMP DEFAULT (datetime('now','localtime'))
 		);
 		CREATE UNIQUE INDEX IF NOT EXISTS idx_usernames_username ON usernames(username);
@@ -59,7 +61,7 @@ func (s *Service) SetUsername(
 	ctx context.Context,
 	username string,
 ) error {
-	_, err := s.db.ExecContext(ctx, `INSERT OR IGNORE INTO usernames(username) VALUES (?)`, username)
+	_, err := s.db.ExecContext(ctx, `INSERT OR IGNORE INTO usernames(username, typename) VALUES (?, "User")`, username)
 	if err != nil {
 		slog.Error("adding username failed",
 			slog.String("username", username),
@@ -76,7 +78,15 @@ func (s *Service) SetUsername(
 func (s *Service) NextUsername(
 	ctx context.Context,
 ) (string, error) {
-	row := s.db.QueryRowContext(ctx, `SELECT username FROM usernames WHERE processed_at IS NULL LIMIT 1;`)
+	row := s.db.QueryRowContext(ctx, `
+		SELECT
+			username
+		FROM usernames
+		WHERE
+			processed_at IS NULL AND
+			typename = 'User'
+		LIMIT 1;
+	`)
 	if row.Err() != nil {
 		return "", fmt.Errorf("could not query find next user: %w", row.Err())
 	}
@@ -140,6 +150,23 @@ func (s *Service) SetProcessed(
 	_, err := s.db.ExecContext(ctx, `UPDATE usernames SET processed_at = datetime('now','localtime') WHERE username = ?`, username)
 	if err != nil {
 		return fmt.Errorf("could not process %q: %w", username, err)
+	}
+
+	return nil
+}
+
+func (s *Service) Close() error {
+	_, err := s.db.Exec(`
+		PRAGMA vacuum;
+		PRAGMA optimize;
+	`)
+	if err != nil {
+		return fmt.Errorf("could not optimize database: %w", err)
+	}
+
+	err = s.db.Close()
+	if err != nil {
+		return fmt.Errorf("could not close DB: %w", err)
 	}
 
 	return nil

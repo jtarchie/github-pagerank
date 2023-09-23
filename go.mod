@@ -9,7 +9,9 @@ require (
 )
 
 require (
+	github.com/alixaxel/pagerank v0.0.0-20200105181019-900657b89dcb // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/jtarchie/pagerank v0.0.0-20230922204854-1219901c120e // indirect
 	github.com/mattn/go-sqlite3 v1.14.17 // indirect
 	github.com/shurcooL/graphql v0.0.0-20230722043721-ed46e5a46466 // indirect
 	golang.org/x/net v0.15.0 // indirect

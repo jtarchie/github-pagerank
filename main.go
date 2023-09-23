@@ -5,10 +5,13 @@ import (
 	"os"
 
 	"github.com/alecthomas/kong"
+	"github.com/jtarchie/github-pagerank/crawl"
+	"github.com/jtarchie/github-pagerank/rank"
 )
 
 type CLI struct {
-	Crawl Crawl `cmd:""`
+	Crawl crawl.Cmd `cmd:""`
+	Rank  rank.Cmd  `cmd:""`
 }
 
 func main() {
