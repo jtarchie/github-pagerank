@@ -1,94 +1,59 @@
-# Project Name: GitHub PageRank
+# Github PageRank
 
-## Description:
+## Description
 
-The GitHub PageRank project is designed to gather data about followers for
-GitHub users and apply the PageRank algorithm to determine the trustworthiness
-of a user based on their connections. The project aims to identify patterns and
-detect bot users through the analysis of user connections.
+The Github PageRank project aims to gather data about Github users and their followers to determine the trustworthiness of users based on their connections. The project utilizes the original PageRank algorithm from Google to analyze the network of Github followers and calculate a rank for each user. By identifying patterns and analyzing the network structure, the project aims to detect potential bot users and provide insights into user relationships on Github.
 
-## Features:
+## Features
 
-- Crawl and gather data on GitHub users and their followers
-- Apply PageRank algorithm to calculate the trustworthiness of a user based on
-  their connections
-- Identify patterns and detect bot users
+- Crawling: The project provides a command-line interface (CLI) for crawling Github user data and collecting follower information.
+- Database Storage: All collected data is stored in an SQLite database for easy retrieval and analysis.
+- PageRank Calculation: The project utilizes the PageRank algorithm to calculate the rank of each user based on their follower connections.
+- Trustworthiness Analysis: By analyzing the network structure and user rankings, the project aims to identify potential bot users and determine the trustworthiness of Github users.
 
-## Installation and Usage:
+## Installation and Usage
 
-1. Install the project dependencies by running the following command:
-   ```bash
+To use the Github PageRank project, follow these steps:
+
+1. Clone the repository:
+
+   ```
+   git clone https://github.com/jtarchie/github-pagerank.git
+   ```
+
+2. Change to the project directory:
+
+   ```
+   cd github-pagerank
+   ```
+
+3. Install the required dependencies:
+
+   ```
    go mod download
    ```
-2. Import the necessary packages in your Go code:
-   ```go
-   import (
-       "github.com/jtarchie/github-pagerank/crawl"
-       "github.com/jtarchie/github-pagerank/rank"
-   )
+
+4. Build the project:
+
    ```
-3. To use the crawling functionality, create an instance of `crawl.Cmd` and set
-   the required fields:
-   ```go
-   cli := crawl.Cmd{
-       DBFilename: "<path_to_database_file>",
-       GithubAPIKey: "<github_api_key>",
-       WaitInterval: time.Duration(1) * time.Second,
-       ResultLimit: 100,
-       MaxFollowing: 510,
-       Username: "<starting_username>",
-   }
-   ```
-4. To start crawling, call the `Run` method of the `Cmd` instance:
-   ```go
-   err := cli.Run()
-   if err != nil {
-       // handle error
-   }
+   go build
    ```
 
-5. To use the ranking functionality, create an instance of `rank.Cmd` and set
-   the required fields:
-   ```go
-   cli := rank.Cmd{
-       DBFilename: "<path_to_database_file>",
-   }
+5. Run the CLI commands for crawling and ranking:
+
    ```
-6. To run the ranking algorithm and get the results, call the `Run` method of
-   the `Cmd` instance:
-   ```go
-   err := cli.Run()
-   if err != nil {
-       // handle error
-   }
+   # Example CLI commands
+   ./github-pagerank crawl --help
+   ./github-pagerank crawl --Username=<username> --DBFilename=<filename>
+
+   ./github-pagerank rank --help
+   ./github-pagerank rank --DBFilename=<filename>
    ```
-   The results will be printed on the console, showing the IDs and ranks of the
-   users.
 
-## Evaluation:
+   Replace `<username>` with the starting username for crawling and `<filename>` with the desired name of the SQLite database file.
 
-- This project provides a way to gather and analyze GitHub user data to
-  determine trustworthiness based on their connections.
-- It uses the PageRank algorithm to calculate the ranks of users.
-- The crawling functionality allows you to gather data on users and their
-  followers, while the ranking functionality applies the algorithm to calculate
-  the ranks.
-- The project currently runs on a subset of users and has shown promising
-  results in identifying patterns and detecting bot users.
-- TODO: Provide instructions or guidelines for using the project with a larger
-  dataset or expanding the analysis capabilities.
-- TODO: Add more detailed information about the specific patterns and
-  characteristics that are used to identify bot users.
-- TODO: Include information on the limitations or potential improvements for the
-  project, such as handling different types of users and organizations.
+## Evaluation
 
-## Contributing:
+The Github PageRank project offers a powerful tool for analyzing Github user relationships and determining user trustworthiness based on follower connections. By collecting and analyzing data, potential patterns and insights can be discovered. The project showcases the implementation of the original PageRank algorithm and provides a CLI for easy usage.
 
-- Contributions are welcome! If you find any issues or have suggestions for
-  improvements, please feel free to open an issue or submit a pull request.
-- TODO: Add guidelines for contributing to the project.
-
-## License:
-
-- This project is licensed under the MIT License. See the [LICENSE](LICENSE)
-  file for more details.
+FIXME: Include any additional details or information on how to run the project, potential limitations, or further improvements that need to be addressed.
